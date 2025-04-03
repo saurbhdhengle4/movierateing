@@ -24,12 +24,13 @@ class MovieBloc extends Bloc<MovieEvent, MovieState> {
     on<FetchMovies>((event, emit) async {
       try {
         final newMovies = await apiService.fetchMovies();
-        emit(MovieState(
-          movies: List.of(state.movies)..addAll(newMovies),
-          hasReachedMax: newMovies.isEmpty,
-        ));
+        if (newMovies.isNotEmpty) {
+          emit(MovieState(
+            movies: List.of(state.movies)..addAll(newMovies),
+            hasReachedMax: newMovies.length < 100,
+          ));
+        }
       } catch (_) {
-        print(_);
         emit(MovieState(movies: state.movies));
       }
     });

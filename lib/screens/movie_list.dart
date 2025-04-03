@@ -61,7 +61,7 @@ class _MovieListState extends State<MovieList> {
         ),
         body: BlocBuilder<MovieBloc, MovieState>(
           builder: (context, state) {
-            if (state.movies.isEmpty) {
+            if (state.movies.isEmpty && !state.hasReachedMax) {
               return Center(child: CircularProgressIndicator());
             }
             return NotificationListener<ScrollNotification>(
@@ -69,8 +69,8 @@ class _MovieListState extends State<MovieList> {
                 if (!state.hasReachedMax &&
                     scrollInfo.metrics.pixels ==
                         scrollInfo.metrics.maxScrollExtent) {
-                  _startIndex += 100;
                   _movieBloc.add(FetchMovies(_startIndex));
+                  _startIndex += 100;
                 }
                 return false;
               },
@@ -96,16 +96,18 @@ class _MovieListState extends State<MovieList> {
                       padding: EdgeInsets.all(10),
                       margin: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(width: 0.9, color: Colors.black)),
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(width: 0.9, color: Colors.black),
+                      ),
                       child: Row(
                         children: [
                           SizedBox(
-                              height: 100,
-                              width: 100,
-                              child: movie.primaryImage.isEmpty
-                                  ? Icon(Icons.image_not_supported)
-                                  : Image.network(movie.primaryImage)),
+                            height: 100,
+                            width: 100,
+                            child: movie.primaryImage.isEmpty
+                                ? Icon(Icons.image_not_supported)
+                                : Image.network(movie.primaryImage),
+                          ),
                           Expanded(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
